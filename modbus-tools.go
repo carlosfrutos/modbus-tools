@@ -51,6 +51,11 @@ func SetupHandler(config SerialConfig) *modbus.RTUClientHandler{
 	handler := modbus.NewRTUClientHandler(config.Address);
 	handler.Timeout = config.Timeout
 	handler.IdleTimeout = config.IdleTimeout
+	handler.Address = config.Address
+	handler.BaudRate = config.BaudRate
+	handler.DataBits = config.DataBits
+	handler.StopBits = config.StopBits
+	handler.Parity = config.Parity
 	return handler;
 }
 
