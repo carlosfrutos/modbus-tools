@@ -1,10 +1,11 @@
 package modbustools
 
 import (
-	"github.com/goburrow/modbus"
 	"encoding/binary"
-	"github.com/goburrow/serial"
 	"time"
+
+	"github.com/goburrow/modbus"
+	"github.com/goburrow/serial"
 )
 
 const (
@@ -13,15 +14,16 @@ const (
 )
 // Client from modbus
 type Client modbus.Client
-
-type serialConfig struct {
+// SerialConfig : struct object to store serial configuration
+type SerialConfig struct {
 	// Serial port configuration.
 	serial.Config
 	IdleTimeout time.Duration
 }
 
-func setupConfig(address string, baudRate int, dataBits int, stopBits int, parity string, timeout int64) serialConfig{
-	return serialConfig{
+// SetupConfig : creates and returns an object with the given configuration
+func SetupConfig(address string, baudRate int, dataBits int, stopBits int, parity string, timeout int64) SerialConfig{
+	return SerialConfig{
 		Config: serial.Config{
 			Address: address,
 			BaudRate: baudRate,
@@ -39,24 +41,28 @@ func setupConfig(address string, baudRate int, dataBits int, stopBits int, parit
 	}
 }
 
-func typicalConfig() serialConfig{
-	return setupConfig(defaultAddress, 4800, 8, 1, "N", 3)
+// TypicalConfig : creates and returns a typical configuration object
+func TypicalConfig() SerialConfig{
+	return SetupConfig(defaultAddress, 4800, 8, 1, "N", 3)
 }
 
-func setupHandler(config serialConfig) *modbus.RTUClientHandler{
+// SetupHandler : creates and returns a handler to use to read device information
+func SetupHandler(config SerialConfig) *modbus.RTUClientHandler{
 	handler := modbus.NewRTUClientHandler(config.Address);
 	handler.Timeout = config.Timeout
 	handler.IdleTimeout = config.IdleTimeout
 	return handler;
 }
 
-func check(e error) {
+// Check : checks if the input error has a value to "panic" or ignores it if it's nil
+func Check(e error) {
     if e != nil {
         panic(e)
     }
 }
 
-func convertParity(parity int) string{
+// ConvertParity : converts parity from a custom numeric id to the string ids used by relying module
+func ConvertParity(parity int) string{
 	if parity == 0 {
 		return "N"
 	}
